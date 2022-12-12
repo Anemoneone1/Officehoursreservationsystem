@@ -1,13 +1,14 @@
 package mainPackage.model
 
-import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-class DatabaseMockup private constructor() {
+class DatabaseMockup {
 
-    var Teacher = Teacher()
-        private set
+    var usersdbm = MutableLiveData<List<User>>()
+
+    fun getUserList(): List<User>? { return this.usersdbm.value }
 
     companion object{
         @Volatile private var instance: DatabaseMockup? = null
