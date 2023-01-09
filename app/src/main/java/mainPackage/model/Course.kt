@@ -1,8 +1,5 @@
 package mainPackage.model
 
-data class Course(val code: String, val teacher: User, val name: String) {
+data class Course(val courseId: String, val nameSurname: String, val timeFrom: String,  val timeTo: String, val weeksCount: Int) {
 
-    override fun toString(): String {
-        return "$code - $name\n$teacher"
-    }
 }
