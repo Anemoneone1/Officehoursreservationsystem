@@ -131,13 +131,13 @@
             android:id="@+id/addOfficeHoursButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Office Hours" />
+            android:text="@string/add_office_hours" />
 
         <Button
             android:id="@+id/removeOfficeHoursButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Remove Office Hours"
+            android:text="@string/remove_office_hours"
             android:layout_marginStart="20dp" />
     </LinearLayout>
 
