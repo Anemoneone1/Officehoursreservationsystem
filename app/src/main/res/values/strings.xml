@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">FrontEndTry1</string>
     <string name="app_test">This is a test</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="i_forgot_my_password">I forgot my password</string>
+    <string name="log_in">Log in</string>
+    <string name="office_hours_list">Office Hours List</string>
+
 </resources>
