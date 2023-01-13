@@ -160,9 +160,9 @@ class RepositoryMockup {
         var userEmail = ""
         var list = mutableListOf<String>()
         val database = FirebaseFirestore.getInstance()
-        val myRef = database.collection("OfficeHoursInstance")
+        val ref = database.collection("OfficeHoursInstance")
             .whereEqualTo("email", email)
-            myRef.get()
+            ref.get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     timeFrom = document.get("time_from") as String

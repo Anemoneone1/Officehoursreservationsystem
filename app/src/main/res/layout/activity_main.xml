@@ -10,21 +10,23 @@
         android:id="@+id/imageView"
         android:layout_width="219dp"
         android:layout_height="169dp"
-        app:srcCompat="@drawable/photo_2022_11_06_19_40_28" />
+        app:srcCompat="@drawable/logo" />
 
     <EditText
         android:id="@+id/et_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/et_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/btn_login"
