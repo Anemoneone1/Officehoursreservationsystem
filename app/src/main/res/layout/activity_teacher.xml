@@ -16,8 +16,8 @@
 
     <ImageButton
         android:id="@+id/image_button_4"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/back_arrow" />
