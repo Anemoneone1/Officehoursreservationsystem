@@ -6,16 +6,35 @@
     android:layout_height="match_parent"
     tools:context="mainPackage.view.SecondActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/office_hours_list"
-        android:textSize="40sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="16dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/image_button_2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_arrow" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="50dp"
+            android:text="@string/office_hours_list"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="16dp" />
+
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollView3"
