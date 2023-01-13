@@ -26,7 +26,8 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:autofillHints="emailAddress" />
 
     <Button
         android:id="@+id/btn_login"

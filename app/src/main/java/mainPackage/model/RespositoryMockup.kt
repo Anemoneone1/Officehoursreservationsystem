@@ -108,36 +108,6 @@ class RepositoryMockup {
 
     }
 
-    fun readCourseById(courseId: String): MutableList<Any> {
-        val database = FirebaseFirestore.getInstance()
-        val myRef = database.collection("Course").document(courseId)
-        var list = mutableListOf<Any>()
-        var nameSurname = ""
-        var timeFrom = ""
-        var timeTo = ""
-        var weeksCount = 0
-
-        myRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    nameSurname = document.get("name_surname") as String
-                    timeFrom = document.get("time_from") as String
-                    timeTo = document.get("time_to") as String
-                    weeksCount = document.get("weeks_count") as Int
-                    list.add(Course(courseId, nameSurname, timeFrom, timeTo, weeksCount))
-                    Log.d(TAG, "Name and surname successfully read")
-                } else {
-                    Log.d(TAG, "Is empty")
-                }
-            }
-            .addOnFailureListener { exception ->
-                if (exception is FirebaseFirestoreException) {
-                    Log.e(TAG, "Error getting document: ", exception)
-                }
-            }
-        return list
-    }
-
     fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String) {
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("OfficeHoursInstance")
@@ -162,7 +132,7 @@ class RepositoryMockup {
         val database = FirebaseFirestore.getInstance()
         val ref = database.collection("OfficeHoursInstance")
             .whereEqualTo("email", email)
-            ref.get()
+        ref.get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     timeFrom = document.get("time_from") as String
@@ -170,6 +140,56 @@ class RepositoryMockup {
                     userEmail = document.get("email") as String
                     list.add(OfficeHoursInstance(userEmail, timeFrom, timeTo).toString())
                     Log.d(TAG, " Time instance successfully read")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        return list
+    }
+
+    fun writeStudentsTimeInstance(title: String, time: String, message: String, status: String, officeHoursCode: String) {
+        val database = FirebaseFirestore.getInstance()
+        val myRef = database.collection("Student_Request")
+
+        val newInstance = hashMapOf(
+            "Title" to title,
+            "Time" to time,
+            "Message" to message,
+            "Status" to status,
+            "office_hours_code" to officeHoursCode
+        )
+
+        myRef.add(newInstance)
+            .addOnSuccessListener { Log.d(TAG, "Instance successfully added") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing Instance", e) }
+
+    }
+
+
+
+    fun readCourseById(courseId: String): MutableList<Any> {
+        val database = FirebaseFirestore.getInstance()
+        val myRef = database.collection("Course").document(courseId)
+        var list = mutableListOf<Any>()
+        var nameSurname = ""
+        var timeFrom = ""
+        var timeTo = ""
+        var weeksCount = 0
+
+        myRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    nameSurname = document.get("name_surname") as String
+                    timeFrom = document.get("time_from") as String
+                    timeTo = document.get("time_to") as String
+                    weeksCount = document.get("weeks_count") as Int
+                    list.add(Course(courseId, nameSurname, timeFrom, timeTo, weeksCount))
+                    Log.d(TAG, "Name and surname successfully read")
+                } else {
+                    Log.d(TAG, "Is empty")
                 }
             }
             .addOnFailureListener { exception ->
