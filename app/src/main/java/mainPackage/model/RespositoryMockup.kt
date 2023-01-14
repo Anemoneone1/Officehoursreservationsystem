@@ -28,6 +28,31 @@ class RepositoryMockup {
 
     }
 
+    fun checkIfPassMatch(user: User) : Boolean{
+        val database = FirebaseFirestore.getInstance()
+        val myRef = database.collection("Users").document(user.email)
+        var pass = ""
+        var bool = false
+        myRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    pass = document.get("pass") as String
+                    if(pass == password){
+                        bool = true
+                    }
+                    Log.d(TAG, "Pass successfully checked")
+                } else {
+                    Log.d(TAG, "Is empty")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        return bool
+    }
+
     fun readNameSurnameByEmail(email: String): String {
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("Users").document(email)
@@ -110,17 +135,21 @@ class RepositoryMockup {
 
     fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String) {
         val database = FirebaseFirestore.getInstance()
-        val myRef = database.collection("OfficeHoursInstance")
-
+        var id = ""
+        val myRef = database.collection("OfficeHoursInstance").document()
+        id = myRef.id
         val newInstance = hashMapOf(
             "email" to email,
             "time_from" to timeFrom,
-            "time_to" to timeTo
+            "time_to" to timeTo,
+            "id" to id
         )
 
-        myRef.add(newInstance)
+        myRef.set(newInstance)
             .addOnSuccessListener { Log.d(TAG, "Instance successfully added") }
             .addOnFailureListener { e -> Log.w(TAG, "Error writing Instance", e) }
+
+
 
     }
 
@@ -128,7 +157,7 @@ class RepositoryMockup {
         var timeFrom = ""
         var timeTo = ""
         var userEmail = ""
-        var list = mutableListOf<String>()
+        var code = ""
         val database = FirebaseFirestore.getInstance()
         val ref = database.collection("OfficeHoursInstance")
             .whereEqualTo("email", email)
@@ -138,6 +167,7 @@ class RepositoryMockup {
                     timeFrom = document.get("time_from") as String
                     timeTo = document.get("time_to") as String
                     userEmail = document.get("email") as String
+                    code = document.get("id") as String
                     Log.d(TAG, " Time instance successfully read")
                 }
             }
@@ -146,7 +176,36 @@ class RepositoryMockup {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return OfficeHoursInstance(userEmail, timeFrom, timeTo)
+        return OfficeHoursInstance(userEmail, timeFrom, timeTo, code)
+    }
+
+    fun readStudentsTimeInstance(email: String) : StudentsTimeInstance{
+        var title = ""
+        var time = ""
+        var message = ""
+        var status = ""
+        var officeHoursCode = ""
+        val database = FirebaseFirestore.getInstance()
+        val ref = database.collection("Student_Request")
+            .whereEqualTo("email", email)
+        ref.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    title = document.get("Title") as String
+                    time = document.get("Time") as String
+                    message = document.get("Message") as String
+                    status = document.get("Status") as String
+                    officeHoursCode = document.get("office_hours_code") as String
+
+                    Log.d(TAG, " Time instance successfully read")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        return StudentsTimeInstance(title, time, message, status, officeHoursCode)
     }
 
     fun writeStudentsTimeInstance(title: String, time: String, message: String, status: String, officeHoursCode: String) {
