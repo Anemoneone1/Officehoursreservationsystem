@@ -20,7 +20,8 @@
             android:layout_height="48dp"
             android:background="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/back_arrow" />
+            android:src="@drawable/back_arrow"
+            tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/textView"
@@ -29,12 +30,23 @@
             android:paddingLeft="40dp"
             android:text="@string/office_hours_list"
             android:textSize="30sp"
+            android:layout_weight="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteY="16dp" />
 
+        <ImageButton
+            android:id="@+id/img_button_forward"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/pan_list"
+            tools:ignore="SpeakableTextPresentCheck" />
     </LinearLayout>
+
 
     <ScrollView
         android:id="@+id/scrollView3"
