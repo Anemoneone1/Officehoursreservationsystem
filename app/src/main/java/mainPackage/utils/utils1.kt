@@ -8,9 +8,16 @@ const val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])
 
 object utils1 {
 
-    fun passwordCheck(password: String): Boolean{
+    fun passwordCheck(password: String): Checks{
         var pattern = Pattern.compile(PASSWORD_PATTERN)
         var matcher = pattern.matcher(password)
-        return matcher.matches()
+        when(matcher.matches()) {
+            true -> return Checks.PASSED
+            false -> return Checks.INCORRECT_PASSWORD_FORM
+        }
     }
+}
+
+enum class Checks {
+    TEACHER, STUDENT, FAILED_CHECK, INCORRECT_PASSWORD_FORM, PASSWORD_DOESNT_MATCH, INCORRECT_EMAIL_FORM, PASSED, NEW_USER_CREATED
 }
