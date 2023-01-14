@@ -124,7 +124,7 @@ class RepositoryMockup {
 
     }
 
-    fun readOfficeHoursInstance(email: String) : MutableList<String>{
+    fun readOfficeHoursInstance(email: String) : OfficeHoursInstance{
         var timeFrom = ""
         var timeTo = ""
         var userEmail = ""
@@ -138,7 +138,6 @@ class RepositoryMockup {
                     timeFrom = document.get("time_from") as String
                     timeTo = document.get("time_to") as String
                     userEmail = document.get("email") as String
-                    list.add(OfficeHoursInstance(userEmail, timeFrom, timeTo).toString())
                     Log.d(TAG, " Time instance successfully read")
                 }
             }
@@ -147,7 +146,7 @@ class RepositoryMockup {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return list
+        return OfficeHoursInstance(userEmail, timeFrom, timeTo)
     }
 
     fun writeStudentsTimeInstance(title: String, time: String, message: String, status: String, officeHoursCode: String) {
