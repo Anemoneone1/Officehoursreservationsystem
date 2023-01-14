@@ -28,20 +28,23 @@ class RepositoryMockup {
 
     }
 
-    fun checkIfPassMatch(user: User) : Boolean{
+    fun userLogin(user: User?) : Integer{
         val database = FirebaseFirestore.getInstance()
-        val myRef = database.collection("Users").document(user.email)
+        val myRef = database.collection("Users").document(user?.email)
         var pass = ""
-        var bool = false
+        var final = 0
         myRef.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     pass = document.get("pass") as String
-                    if(pass == password){
-                        bool = true
+                    if(pass == user?.password){
+                        final = 2
+                    } else {
+                        final = 1
                     }
                     Log.d(TAG, "Pass successfully checked")
                 } else {
+                    final = 3
                     Log.d(TAG, "Is empty")
                 }
             }
@@ -50,7 +53,7 @@ class RepositoryMockup {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return bool
+        return final
     }
 
     fun readNameSurnameByEmail(email: String): String {
