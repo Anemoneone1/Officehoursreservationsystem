@@ -180,6 +180,7 @@ class RepositoryMockup {
                     timeTo = document.get("time_to") as String
                     userEmail = document.get("email") as String
                     code = document.get("id") as String
+                    list.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
                     Log.d(TAG, " Time instance successfully read")
                 }
             }
@@ -188,7 +189,60 @@ class RepositoryMockup {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return OfficeHoursInstance(userEmail, timeFrom, timeTo, code)
+        return list
+    }
+
+    fun updateUserOfficeHoursList(email: String, code: String){
+        val database = FirebaseFirestore.getInstance()
+        val ref = database.collection("Users").document(email)
+        var list = ""
+
+        ref.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    list = document.get("office_hours_list") as String
+                    Log.d(TAG, "office_hours_list successfully read")
+                } else {
+                    Log.d(TAG, "Is empty")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        if (list.isEmpty()){
+            list = code
+        }
+        else {
+            list + ", " + code
+        }
+        ref.update("office_hours_list", list)
+    }
+
+    fun showOfficeHoursList(email: String) : MutableList<String>{
+        val database = FirebaseFirestore.getInstance()
+        val ref = database.collection("Users").document(email)
+        var list = mutableListOf<String>()
+        var stringValue = ""
+
+        ref.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    stringValue = document.get("office_hours_list") as String
+                    Log.d(TAG, "office_hours_list successfully read")
+                } else {
+                    Log.d(TAG, "Is empty")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        list = stringValue.split(",").map { it.trim() }.toMutableList()
+
+        return list
     }
 
     fun readStudentsTimeInstance(email: String) : StudentsTimeInstance{
