@@ -282,38 +282,6 @@ class RepositoryMockup {
 
     }
 
-
-
-    fun readCourseById(courseId: String): MutableList<Any> {
-        val database = FirebaseFirestore.getInstance()
-        val myRef = database.collection("Course").document(courseId)
-        var list = mutableListOf<Any>()
-        var nameSurname = ""
-        var timeFrom = ""
-        var timeTo = ""
-        var weeksCount = 0
-
-        myRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    nameSurname = document.get("name_surname") as String
-                    timeFrom = document.get("time_from") as String
-                    timeTo = document.get("time_to") as String
-                    weeksCount = document.get("weeks_count") as Int
-                    list.add(Course(courseId, nameSurname, timeFrom, timeTo, weeksCount))
-                    Log.d(TAG, "Name and surname successfully read")
-                } else {
-                    Log.d(TAG, "Is empty")
-                }
-            }
-            .addOnFailureListener { exception ->
-                if (exception is FirebaseFirestoreException) {
-                    Log.e(TAG, "Error getting document: ", exception)
-                }
-            }
-        return list
-    }
-
     fun updateUsersPassword(password: String, email: String){
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("Users").document(email)
