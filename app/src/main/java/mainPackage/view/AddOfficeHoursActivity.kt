@@ -2,6 +2,7 @@ package mainPackage.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.officehoursreservationsystem.R
 
 class AddOfficeHoursActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
