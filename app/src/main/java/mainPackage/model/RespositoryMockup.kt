@@ -3,6 +3,7 @@ package mainPackage.model
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestoreException
+import mainPackage.utils.Checks
 
 const val TAG = "FIRESTORE"
 
@@ -28,32 +29,39 @@ class RepositoryMockup {
 
     }
 
-    fun userLogin(user: User?) : Integer{
+    fun userLogin(user: User?) : Checks {
         val database = FirebaseFirestore.getInstance()
-        val myRef = database.collection("Users").document(user?.email)
+        val myRef = user?.email?.let { database.collection("Users").document(it) }
         var pass = ""
         var final = 0
-        myRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    pass = document.get("pass") as String
-                    if(pass == user?.password){
-                        final = 2
+        if (myRef != null) {
+            myRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        pass = document.get("pass") as String
+                        if(pass == user?.password){
+                            final = 2
+                        } else {
+                            final = 1
+                        }
+                        Log.d(TAG, "Pass successfully checked")
                     } else {
-                        final = 1
+                        final = 3
+                        Log.d(TAG, "Is empty")
                     }
-                    Log.d(TAG, "Pass successfully checked")
-                } else {
-                    final = 3
-                    Log.d(TAG, "Is empty")
                 }
-            }
-            .addOnFailureListener { exception ->
-                if (exception is FirebaseFirestoreException) {
-                    Log.e(TAG, "Error getting document: ", exception)
+                .addOnFailureListener { exception ->
+                    if (exception is FirebaseFirestoreException) {
+                        Log.e(TAG, "Error getting document: ", exception)
+                    }
                 }
-            }
-        return final
+        }
+        when (final) {
+            1 -> return Checks.FAILED_CHECK
+            2 -> return Checks.PASSED
+            3 -> return Checks.NEW_USER_CREATED
+        }
+        return Checks.FAILED_CHECK
     }
 
     fun readNameSurnameByEmail(email: String): String {
@@ -136,7 +144,7 @@ class RepositoryMockup {
 
     }
 
-    fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String) {
+    fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String, id: String) {
         val database = FirebaseFirestore.getInstance()
         var id = ""
         val myRef = database.collection("OfficeHoursInstance").document()
@@ -156,11 +164,12 @@ class RepositoryMockup {
 
     }
 
-    fun readOfficeHoursInstance(email: String) : OfficeHoursInstance{
+    fun readOfficeHoursInstanceTeacher(email: String) : MutableList<OfficeHoursInstance>{
         var timeFrom = ""
         var timeTo = ""
         var userEmail = ""
         var code = ""
+        var list = mutableListOf<OfficeHoursInstance>()
         val database = FirebaseFirestore.getInstance()
         val ref = database.collection("OfficeHoursInstance")
             .whereEqualTo("email", email)
