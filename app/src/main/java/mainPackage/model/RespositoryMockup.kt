@@ -220,10 +220,11 @@ class RepositoryMockup {
         ref.update("office_hours_list", list)
     }
 
-    fun showOfficeHoursList(email: String) : MutableList<String>{
+    fun showOfficeHoursList(email: String) : MutableList<OfficeHoursInstance>{
         val database = FirebaseFirestore.getInstance()
         val ref = database.collection("Users").document(email)
         var list = mutableListOf<String>()
+        var listFinal = mutableListOf<OfficeHoursInstance>()
         var stringValue = ""
 
         ref.get()
@@ -242,7 +243,29 @@ class RepositoryMockup {
             }
         list = stringValue.split(",").map { it.trim() }.toMutableList()
 
-        return list
+        for (document in list) {
+            var timeFrom = ""
+            var timeTo = ""
+            var userEmail = ""
+            var code = ""
+            val newRef = database.collection("OfficeHoursInstance").document(document)
+            newRef.get()
+                .addOnSuccessListener { document ->
+                        timeFrom = document.get("time_from") as String
+                        timeTo = document.get("time_to") as String
+                        userEmail = document.get("email") as String
+                        code = document.get("id") as String
+                        listFinal.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
+                        Log.d(TAG, " Time instance successfully read")
+
+                }
+                .addOnFailureListener { exception ->
+                    if (exception is FirebaseFirestoreException) {
+                        Log.e(TAG, "Error getting document: ", exception)
+                    }
+                }
+        }
+        return listFinal
     }
 
     fun readStudentsTimeInstance(email: String) : StudentsTimeInstance{
