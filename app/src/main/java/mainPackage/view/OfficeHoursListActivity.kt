@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.lifecycle.ViewModelProvider
 import com.example.officehoursreservationsystem.R
-import mainPackage.model.OfficeHoursInstance
 import mainPackage.viewModel.OHRViewModel
 
 class OfficeHoursListActivity : AppCompatActivity() {
@@ -33,6 +32,11 @@ class OfficeHoursListActivity : AppCompatActivity() {
             for (item in myList) {
                 val button = Button(this)
                 button.text = "${item.email} ${item.timeFrom} ${item.timeTo}"
+                button.setOnClickListener {
+                    val intent = Intent(this, RequestCreationActivity::class.java)
+                    intent.putExtra("ITEM_ID", item.code)
+                    startActivity(intent)
+                }
                 myLinearLayout.addView(button)
             }
         }

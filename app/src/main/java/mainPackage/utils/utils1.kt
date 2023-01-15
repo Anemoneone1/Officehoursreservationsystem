@@ -4,8 +4,6 @@ import java.util.regex.Pattern
 
 const val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$"
 
-
-
 object utils1 {
 
     fun passwordCheck(password: String): Checks{
@@ -16,6 +14,18 @@ object utils1 {
             false -> return Checks.INCORRECT_PASSWORD_FORM
         }
     }
+
+    fun timeFormCheck(timeRange: String): Boolean {
+        val pattern = "^(\\d{2}):(\\d{2})-(\\d{2}):(\\d{2})$".toRegex()
+        if (!pattern.matches(timeRange)) {
+            return false
+        }
+        val (startHour, startMinute, endHour, endMinute) = pattern.find(timeRange)!!.destructured
+        val startTime = startHour.toInt() * 60 + startMinute.toInt()
+        val endTime = endHour.toInt() * 60 + endMinute.toInt()
+        return startTime < endTime
+    }
+
 }
 
 enum class Checks {

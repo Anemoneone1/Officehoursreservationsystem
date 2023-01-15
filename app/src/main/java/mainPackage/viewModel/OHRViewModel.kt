@@ -27,5 +27,18 @@ class OHRViewModel (): ViewModel(){
         return currentUser.email?.let { repo.showOfficeHoursList(it) }
     }
 
+    fun timeOutOfBoundsCheck(code: String, time: String): Boolean{
+        val pattern = "^(\\d{2}):(\\d{2})-(\\d{2}):(\\d{2})$".toRegex()
+        val (startHour1, startMinute1, endHour1, endMinute1) = pattern.find(time)!!.destructured
+        val startTime1 = startHour1.toInt() * 60 + startMinute1.toInt()
+        val endTime1 = endHour1.toInt() * 60 + endMinute1.toInt()
+
+        val (startHour2, startMinute2, endHour2, endMinute2) = pattern.find(repo.timeFromCode(code))!!.destructured
+        val startTime2 = startHour2.toInt() * 60 + startMinute2.toInt()
+        val endTime2 = endHour2.toInt() * 60 + endMinute2.toInt()
+
+        return (startTime1 < startTime2 && endTime1 <= startTime2) || (startTime1 >= endTime2 && endTime1 > endTime2)
+    }
+
     }
 

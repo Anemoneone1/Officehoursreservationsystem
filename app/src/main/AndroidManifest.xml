@@ -20,7 +20,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="mainPackage.view.StudentActivity"
+            android:name="mainPackage.view.RequestCreationActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

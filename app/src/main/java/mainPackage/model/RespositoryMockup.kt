@@ -109,41 +109,6 @@ class RepositoryMockup {
         return fieldValue
     }
 
-    fun writeCourse(courseId: String, email: String, timeFrom: String, timeTo: String, weeksCount: Int) {
-        val database = FirebaseFirestore.getInstance()
-        var nameAndSurname = ""
-        val emailRef = database.collection("Users").document(email)
-
-        emailRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    nameAndSurname = document.get("name_surname") as String
-                    Log.d(TAG, "Name and surname successfully read In Method writeCourse")
-                } else {
-                    Log.d(TAG, "Is empty")
-                }
-            }
-            .addOnFailureListener { exception ->
-                if (exception is FirebaseFirestoreException) {
-                    Log.e(TAG, "Error getting document: ", exception)
-                }
-            }
-
-        val myRef = database.collection("Course").document(courseId)
-
-        val newCourse = hashMapOf(
-            "name_surname" to nameAndSurname,
-            "time_from" to timeFrom,
-            "time_to" to timeTo,
-            "weeks_count" to weeksCount
-        )
-
-        myRef.set(newCourse)
-            .addOnSuccessListener { Log.d(TAG, "Course successfully added") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing Course", e) }
-
-    }
-
     fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String, id: String) {
         val database = FirebaseFirestore.getInstance()
         var id = ""
@@ -313,38 +278,6 @@ class RepositoryMockup {
             .addOnSuccessListener { Log.d(TAG, "Instance successfully added") }
             .addOnFailureListener { e -> Log.w(TAG, "Error writing Instance", e) }
 
-    }
-
-
-
-    fun readCourseById(courseId: String): MutableList<Any> {
-        val database = FirebaseFirestore.getInstance()
-        val myRef = database.collection("Course").document(courseId)
-        var list = mutableListOf<Any>()
-        var nameSurname = ""
-        var timeFrom = ""
-        var timeTo = ""
-        var weeksCount = 0
-
-        myRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    nameSurname = document.get("name_surname") as String
-                    timeFrom = document.get("time_from") as String
-                    timeTo = document.get("time_to") as String
-                    weeksCount = document.get("weeks_count") as Int
-                    list.add(Course(courseId, nameSurname, timeFrom, timeTo, weeksCount))
-                    Log.d(TAG, "Name and surname successfully read")
-                } else {
-                    Log.d(TAG, "Is empty")
-                }
-            }
-            .addOnFailureListener { exception ->
-                if (exception is FirebaseFirestoreException) {
-                    Log.e(TAG, "Error getting document: ", exception)
-                }
-            }
-        return list
     }
 
     fun updateUsersPassword(password: String, email: String){

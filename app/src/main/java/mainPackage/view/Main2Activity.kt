@@ -24,15 +24,15 @@ class Main2Activity : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.btn_login)
 
         loginButton.setOnClickListener { onButtonClick(it) }
-
         }
+
     fun onButtonClick(view: View) {
-        val intent = Intent(this, SecondActivity::class.java)
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
 
 
-    class SecondActivity : AppCompatActivity() {
+    class LoginActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
 
             var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
