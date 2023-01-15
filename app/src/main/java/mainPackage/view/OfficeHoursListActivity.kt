@@ -29,10 +29,12 @@ class OfficeHoursListActivity : AppCompatActivity() {
 //        val myList = listOf(OfficeHoursInstance("maksym@gmail.com", "10:00", "11:00", "1231"), OfficeHoursInstance("jane@gmail.com", "11:00", "12:00", "1231"))
         val myList = viewModel.getOfficeHoursList()
 
-        for (item in myList) {
-            val button = Button(this)
-            button.text = "${item.email} ${item.timeFrom} ${item.timeTo}"
-            myLinearLayout.addView(button)
+        if (myList != null) {
+            for (item in myList) {
+                val button = Button(this)
+                button.text = "${item.email} ${item.timeFrom} ${item.timeTo}"
+                myLinearLayout.addView(button)
+            }
         }
         myScrollView.addView(myLinearLayout)
     }

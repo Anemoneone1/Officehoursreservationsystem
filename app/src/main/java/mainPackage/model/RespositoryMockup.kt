@@ -29,7 +29,7 @@ class RepositoryMockup {
 
     }
 
-    public fun userLogin(user: User?) : Checks {
+    fun userLogin(user: User?) : Checks {
         val database = FirebaseFirestore.getInstance()
         val myRef = user?.email?.let { database.collection("Users").document(it) }
         var pass = ""
@@ -164,32 +164,109 @@ class RepositoryMockup {
 
     }
 
-//    fun readOfficeHoursInstanceTeacher(email: String) : MutableList<OfficeHoursInstance>{
-//        var timeFrom = ""
-//        var timeTo = ""
-//        var userEmail = ""
-//        var code = ""
-//        var list = mutableListOf<OfficeHoursInstance>()
-//        val database = FirebaseFirestore.getInstance()
-//        val ref = database.collection("OfficeHoursInstance")
-//            .whereEqualTo("email", email)
-//        ref.get()
-//            .addOnSuccessListener { documents ->
-//                for (document in documents) {
-//                    timeFrom = document.get("time_from") as String
-//                    timeTo = document.get("time_to") as String
-//                    userEmail = document.get("email") as String
-//                    code = document.get("id") as String
-//                    Log.d(TAG, " Time instance successfully read")
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                if (exception is FirebaseFirestoreException) {
-//                    Log.e(TAG, "Error getting document: ", exception)
-//                }
-//            }
-//        return OfficeHoursInstance(userEmail, timeFrom, timeTo, code)
-//    }
+    fun readOfficeHoursInstanceTeacher(email: String) : MutableList<OfficeHoursInstance>{
+        var timeFrom = ""
+        var timeTo = ""
+        var userEmail = ""
+        var code = ""
+        var list = mutableListOf<OfficeHoursInstance>()
+        val database = FirebaseFirestore.getInstance()
+        val ref = database.collection("OfficeHoursInstance")
+            .whereEqualTo("email", email)
+        ref.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    timeFrom = document.get("time_from") as String
+                    timeTo = document.get("time_to") as String
+                    userEmail = document.get("email") as String
+                    code = document.get("id") as String
+                    list.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
+                    Log.d(TAG, " Time instance successfully read")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        return list
+    }
+
+    fun updateUserOfficeHoursList(email: String, code: String){
+        val database = FirebaseFirestore.getInstance()
+        val ref = database.collection("Users").document(email)
+        var list = ""
+
+        ref.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    list = document.get("office_hours_list") as String
+                    Log.d(TAG, "office_hours_list successfully read")
+                } else {
+                    Log.d(TAG, "Is empty")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        if (list.isEmpty()){
+            list = code
+        }
+        else {
+            list + ", " + code
+        }
+        ref.update("office_hours_list", list)
+    }
+
+    fun showOfficeHoursList(email: String) : MutableList<OfficeHoursInstance>{
+        val database = FirebaseFirestore.getInstance()
+        val ref = database.collection("Users").document(email)
+        var list = mutableListOf<String>()
+        var listFinal = mutableListOf<OfficeHoursInstance>()
+        var stringValue = ""
+
+        ref.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    stringValue = document.get("office_hours_list") as String
+                    Log.d(TAG, "office_hours_list successfully read")
+                } else {
+                    Log.d(TAG, "Is empty")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        list = stringValue.split(",").map { it.trim() }.toMutableList()
+
+        for (document in list) {
+            var timeFrom = ""
+            var timeTo = ""
+            var userEmail = ""
+            var code = ""
+            val newRef = database.collection("OfficeHoursInstance").document(document)
+            newRef.get()
+                .addOnSuccessListener { document ->
+                    timeFrom = document.get("time_from") as String
+                    timeTo = document.get("time_to") as String
+                    userEmail = document.get("email") as String
+                    code = document.get("id") as String
+                    listFinal.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
+                    Log.d(TAG, " Time instance successfully read")
+
+                }
+                .addOnFailureListener { exception ->
+                    if (exception is FirebaseFirestoreException) {
+                        Log.e(TAG, "Error getting document: ", exception)
+                    }
+                }
+        }
+        return listFinal
+    }
 
     fun readStudentsTimeInstance(email: String) : StudentsTimeInstance{
         var title = ""

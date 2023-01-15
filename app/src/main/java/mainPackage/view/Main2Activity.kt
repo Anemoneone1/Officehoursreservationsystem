@@ -45,9 +45,10 @@ class Main2Activity : AppCompatActivity() {
             val password = passwordEditText.text.toString()
             when(viewModel.login(email, password)){
                 Checks.PASSED-> setContentView(R.layout.activity_office_hours_list)
-//                Checks.INCORRECT_PASSWORD_FORM->
-//                Checks.INCORRECT_EMAIL_FORM ->
+                Checks.INCORRECT_PASSWORD_FORM->showIncorrectPasswordFormPopup(this)
+                Checks.INCORRECT_EMAIL_FORM ->showIncorrectEmailFormPopup(this)
                 Checks.NEW_USER_CREATED-> showNewUserPopup(this)
+                Checks.FAILED_CHECK-> showIncorrectPasswordPopup(this)
                 else->{}
             }
         }
@@ -56,6 +57,33 @@ class Main2Activity : AppCompatActivity() {
             val builder = AlertDialog.Builder(context)
             builder.setTitle("New User Created")
             builder.setMessage("A new user has been successfully created!")
+            builder.setPositiveButton("OK") { _, _ -> }
+            val alertDialog = builder.create()
+            alertDialog.show()
+        }
+
+        fun showIncorrectPasswordFormPopup(context: Context) {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Error")
+            builder.setMessage("The password is in incorrect form")
+            builder.setPositiveButton("OK") { _, _ -> }
+            val alertDialog = builder.create()
+            alertDialog.show()
+        }
+
+        fun showIncorrectPasswordPopup(context: Context) {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Error")
+            builder.setMessage("The password is incorrect")
+            builder.setPositiveButton("OK") { _, _ -> }
+            val alertDialog = builder.create()
+            alertDialog.show()
+        }
+
+        fun showIncorrectEmailFormPopup(context: Context) {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Error")
+            builder.setMessage("The email is in incorrect form")
             builder.setPositiveButton("OK") { _, _ -> }
             val alertDialog = builder.create()
             alertDialog.show()
