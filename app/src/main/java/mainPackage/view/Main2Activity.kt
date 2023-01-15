@@ -46,7 +46,10 @@ class Main2Activity : AppCompatActivity() {
             when(viewModel.login(email, password)){
                 Checks.PASSED-> setContentView(R.layout.activity_office_hours_list)
                 Checks.INCORRECT_PASSWORD_FORM->showIncorrectPasswordFormPopup(this)
-                Checks.INCORRECT_EMAIL_FORM ->showIncorrectEmailFormPopup(this)
+                Checks.INCORRECT_EMAIL_FORM -> {
+                    showIncorrectEmailFormPopup(this)
+                    setContentView(R.layout.activity_office_hours_list)
+                }
                 Checks.NEW_USER_CREATED-> showNewUserPopup(this)
                 Checks.FAILED_CHECK-> showIncorrectPasswordPopup(this)
                 else->{}
