@@ -20,5 +20,6 @@
     <string name="cancel">Cancel</string>
     <string name="add_office_hours">Add Office Hours</string>
     <string name="remove_office_hours">Remove Office Hours</string>
+    <string name="request_panel">Request panel</string>
 
 </resources>
