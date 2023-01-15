@@ -7,13 +7,15 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import androidx.lifecycle.ViewModelProvider
 import com.example.officehoursreservationsystem.R
 import mainPackage.model.OfficeHoursInstance
+import mainPackage.viewModel.OHRViewModel
 
-class SecondActivity : AppCompatActivity() {
+class OfficeHoursListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_second)
+        setContentView(R.layout.activity_office_hours_list)
 
         val secondButAct = findViewById<ImageButton>(R.id.image_button_2)
         secondButAct.setOnClickListener{
@@ -21,9 +23,11 @@ class SecondActivity : AppCompatActivity() {
             startActivity(Intent)
         }
 
+        var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
         val myLinearLayout = findViewById<LinearLayout>(R.id.my_linear_layout)
         val myScrollView = findViewById<ScrollView>(R.id.scrollView3)
-        val myList = listOf(OfficeHoursInstance("maksym@gmail.com", "10:00", "11:00", "1231"), OfficeHoursInstance("jane@gmail.com", "11:00", "12:00", "1231"))
+//        val myList = listOf(OfficeHoursInstance("maksym@gmail.com", "10:00", "11:00", "1231"), OfficeHoursInstance("jane@gmail.com", "11:00", "12:00", "1231"))
+        val myList = viewModel.getOfficeHoursList()
 
         for (item in myList) {
             val button = Button(this)

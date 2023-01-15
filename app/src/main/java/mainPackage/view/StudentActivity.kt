@@ -13,7 +13,7 @@ class StudentActivity : AppCompatActivity() {
 
         val butAct = findViewById<ImageButton>(R.id.image_button_3)
         butAct.setOnClickListener {
-            val Intent = Intent(this, SecondActivity::class.java)
+            val Intent = Intent(this, OfficeHoursListActivity::class.java)
             startActivity(Intent)
         }
     }

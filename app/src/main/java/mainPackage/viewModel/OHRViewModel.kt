@@ -1,21 +1,46 @@
 package mainPackage.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import mainPackage.model.OfficeHoursInstance
-import mainPackage.model.RepositoryMockup
 import mainPackage.model.User
-import java.sql.Time
-import java.time.DayOfWeek
+import mainPackage.utils.Checks
+import mainPackage.utils.utils1.passwordCheck
+import mainPackage.model.RepositoryMockup
 
-class ViewModel (email: String): ViewModel(){
+class OHRViewModel (): ViewModel(){
 
-//    private val repository = RepositoryMockup()
-//
-//    private var currentUser = repository.findCurrentUser(email)
+    private var currentUser = User()
+    var ha = currentUser?.password
+    val repo = RepositoryMockup()
 //    private val userList = repository.getUserList()
-//
+
+    fun login(email: String, password: String): Checks{
+        var currUser = User()
+        if (currUser.setEmail(email)==Checks.INCORRECT_EMAIL_FORM) return Checks.INCORRECT_EMAIL_FORM
+        else if (passwordCheck(password)==Checks.INCORRECT_PASSWORD_FORM) return  Checks.INCORRECT_PASSWORD_FORM
+        currUser.password=password
+        currentUser=currUser
+        return repo.userLogin(currentUser)
+    }
+
+    fun getOfficeHoursList(): List<OfficeHoursInstance>{
+        return showOfficeHoursList()
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //    fun addOfficeHours(dayOfWeek: DayOfWeek, timeFrom: Time, timeTo: Time) =
 //        currentUser?.let {
 //            repository.addOfficeHours(OfficeHoursInstance(dayOfWeek, timeFrom, timeTo),
