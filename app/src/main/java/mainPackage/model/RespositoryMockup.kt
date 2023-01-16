@@ -29,50 +29,47 @@ class RepositoryMockup {
 
     }
 
-    fun userLogin(user: User?) : Checks {
+    //CHECKED AND FIXED
+
+    fun userLogin(user: User?, callback: (Checks) -> Unit) {
         val database = FirebaseFirestore.getInstance()
         val myRef = user?.email?.let { database.collection("Users").document(it) }
-        var pass = ""
-        var final = 0
         if (myRef != null) {
             myRef.get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        pass = document.get("pass") as String
+                        val pass = document.get("pass") as String
                         if(pass == user?.password){
-                            final = 2
+                            callback(Checks.PASSED)
                         } else {
-                            final = 1
+                            callback(Checks.FAILED_CHECK)
                         }
                         Log.d(TAG, "Pass successfully checked")
                     } else {
-                        final = 3
+                        callback(Checks.NEW_USER_CREATED)
                         Log.d(TAG, "Is empty")
                     }
                 }
                 .addOnFailureListener { exception ->
                     if (exception is FirebaseFirestoreException) {
                         Log.e(TAG, "Error getting document: ", exception)
+                        callback(Checks.FAILED_CHECK)
                     }
                 }
         }
-        when (final) {
-            1 -> return Checks.FAILED_CHECK
-            2 -> return Checks.PASSED
-            3 -> return Checks.NEW_USER_CREATED
-        }
-        return Checks.FAILED_CHECK
     }
 
-    fun readNameSurnameByEmail(email: String): String {
+    //CHECKED AND FIXED
+
+    fun readNameSurnameByEmail(email: String, callback: (String) -> Unit){
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("Users").document(email)
-        var fieldValue = ""
 
         myRef.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    fieldValue = document.get("name_surname") as String
+                    val fieldValue = document.get("name_surname") as String
+                    callback(fieldValue)
                     Log.d(TAG, "Name and surname successfully read")
                 } else {
                     Log.d(TAG, "Is empty")
@@ -83,8 +80,9 @@ class RepositoryMockup {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return fieldValue
     }
+
+    //CHECKED
 
     fun readIsATeacherByEmail(email: String): Boolean {
         val database = FirebaseFirestore.getInstance()
@@ -109,7 +107,9 @@ class RepositoryMockup {
         return fieldValue
     }
 
-    fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String, id: String) {
+    //CHECKED
+
+    fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String) {
         val database = FirebaseFirestore.getInstance()
         var id = ""
         val myRef = database.collection("OfficeHoursInstance").document()
@@ -129,7 +129,9 @@ class RepositoryMockup {
 
     }
 
-    fun readOfficeHoursInstanceTeacher(email: String) : MutableList<OfficeHoursInstance>{
+    //CHECKED AND FIXED
+
+    fun readOfficeHoursInstanceTeacher(email: String, callback: (MutableList<OfficeHoursInstance>) -> Unit){
         var timeFrom = ""
         var timeTo = ""
         var userEmail = ""
@@ -148,13 +150,13 @@ class RepositoryMockup {
                     list.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
                     Log.d(TAG, " Time instance successfully read")
                 }
+                callback(list)
             }
             .addOnFailureListener { exception ->
                 if (exception is FirebaseFirestoreException) {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return list
     }
 
     fun updateUserOfficeHoursList(email: String, code: String){
@@ -216,12 +218,12 @@ class RepositoryMockup {
             val newRef = database.collection("OfficeHoursInstance").document(document)
             newRef.get()
                 .addOnSuccessListener { document ->
-                    timeFrom = document.get("time_from") as String
-                    timeTo = document.get("time_to") as String
-                    userEmail = document.get("email") as String
-                    code = document.get("id") as String
-                    listFinal.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
-                    Log.d(TAG, " Time instance successfully read")
+                        timeFrom = document.get("time_from") as String
+                        timeTo = document.get("time_to") as String
+                        userEmail = document.get("email") as String
+                        code = document.get("id") as String
+                        listFinal.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
+                        Log.d(TAG, " Time instance successfully read")
 
                 }
                 .addOnFailureListener { exception ->
@@ -280,6 +282,38 @@ class RepositoryMockup {
 
     }
 
+
+
+    fun readCourseById(courseId: String): MutableList<Any> {
+        val database = FirebaseFirestore.getInstance()
+        val myRef = database.collection("Course").document(courseId)
+        var list = mutableListOf<Any>()
+        var nameSurname = ""
+        var timeFrom = ""
+        var timeTo = ""
+        var weeksCount = 0
+
+        myRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    nameSurname = document.get("name_surname") as String
+                    timeFrom = document.get("time_from") as String
+                    timeTo = document.get("time_to") as String
+                    weeksCount = document.get("weeks_count") as Int
+                    list.add(Course(courseId, nameSurname, timeFrom, timeTo, weeksCount))
+                    Log.d(TAG, "Name and surname successfully read")
+                } else {
+                    Log.d(TAG, "Is empty")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        return list
+    }
+
     fun updateUsersPassword(password: String, email: String){
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("Users").document(email)
@@ -288,7 +322,6 @@ class RepositoryMockup {
             .addOnSuccessListener { Log.d(TAG, "Password successfully updated") }
             .addOnFailureListener { e -> Log.w(TAG, "Error in updating a password", e) }
     }
-
     fun timeFromCode(code: String) : String {
         val database = FirebaseFirestore.getInstance()
         var timeFrom = ""
@@ -312,4 +345,6 @@ class RepositoryMockup {
         time = timeFrom + "-" + timeTo
         return time
     }
+
+    //Функция которая меняет статус реквеста Pending...
 }
