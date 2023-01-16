@@ -29,50 +29,47 @@ class RepositoryMockup {
 
     }
 
-    fun userLogin(user: User?) : Checks {
+    //CHECKED AND FIXED
+
+    fun userLogin(user: User?, callback: (Checks) -> Unit) {
         val database = FirebaseFirestore.getInstance()
         val myRef = user?.email?.let { database.collection("Users").document(it) }
-        var pass = ""
-        var final = 0
         if (myRef != null) {
             myRef.get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        pass = document.get("pass") as String
+                        val pass = document.get("pass") as String
                         if(pass == user?.password){
-                            final = 2
+                            callback(Checks.PASSED)
                         } else {
-                            final = 1
+                            callback(Checks.FAILED_CHECK)
                         }
                         Log.d(TAG, "Pass successfully checked")
                     } else {
-                        final = 3
+                        callback(Checks.NEW_USER_CREATED)
                         Log.d(TAG, "Is empty")
                     }
                 }
                 .addOnFailureListener { exception ->
                     if (exception is FirebaseFirestoreException) {
                         Log.e(TAG, "Error getting document: ", exception)
+                        callback(Checks.FAILED_CHECK)
                     }
                 }
         }
-        when (final) {
-            1 -> return Checks.FAILED_CHECK
-            2 -> return Checks.PASSED
-            3 -> return Checks.NEW_USER_CREATED
-        }
-        return Checks.FAILED_CHECK
     }
 
-    fun readNameSurnameByEmail(email: String): String {
+    //CHECKED AND FIXED
+
+    fun readNameSurnameByEmail(email: String, callback: (String) -> Unit){
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("Users").document(email)
-        var fieldValue = ""
 
         myRef.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    fieldValue = document.get("name_surname") as String
+                    val fieldValue = document.get("name_surname") as String
+                    callback(fieldValue)
                     Log.d(TAG, "Name and surname successfully read")
                 } else {
                     Log.d(TAG, "Is empty")
@@ -83,8 +80,9 @@ class RepositoryMockup {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return fieldValue
     }
+
+    //CHECKED
 
     fun readIsATeacherByEmail(email: String): Boolean {
         val database = FirebaseFirestore.getInstance()
@@ -109,40 +107,7 @@ class RepositoryMockup {
         return fieldValue
     }
 
-    fun writeCourse(courseId: String, email: String, timeFrom: String, timeTo: String, weeksCount: Int) {
-        val database = FirebaseFirestore.getInstance()
-        var nameAndSurname = ""
-        val emailRef = database.collection("Users").document(email)
-
-        emailRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    nameAndSurname = document.get("name_surname") as String
-                    Log.d(TAG, "Name and surname successfully read In Method writeCourse")
-                } else {
-                    Log.d(TAG, "Is empty")
-                }
-            }
-            .addOnFailureListener { exception ->
-                if (exception is FirebaseFirestoreException) {
-                    Log.e(TAG, "Error getting document: ", exception)
-                }
-            }
-
-        val myRef = database.collection("Course").document(courseId)
-
-        val newCourse = hashMapOf(
-            "name_surname" to nameAndSurname,
-            "time_from" to timeFrom,
-            "time_to" to timeTo,
-            "weeks_count" to weeksCount
-        )
-
-        myRef.set(newCourse)
-            .addOnSuccessListener { Log.d(TAG, "Course successfully added") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing Course", e) }
-
-    }
+    //CHECKED
 
     fun writeOfficeHoursInstance(email: String, timeFrom: String, timeTo: String) {
         val database = FirebaseFirestore.getInstance()
@@ -164,7 +129,9 @@ class RepositoryMockup {
 
     }
 
-    fun readOfficeHoursInstanceTeacher(email: String) : MutableList<OfficeHoursInstance>{
+    //CHECKED AND FIXED
+
+    fun readOfficeHoursInstanceTeacher(email: String, callback: (MutableList<OfficeHoursInstance>) -> Unit){
         var timeFrom = ""
         var timeTo = ""
         var userEmail = ""
@@ -183,13 +150,13 @@ class RepositoryMockup {
                     list.add(OfficeHoursInstance(userEmail, timeFrom, timeTo, code))
                     Log.d(TAG, " Time instance successfully read")
                 }
+                callback(list)
             }
             .addOnFailureListener { exception ->
                 if (exception is FirebaseFirestoreException) {
                     Log.e(TAG, "Error getting document: ", exception)
                 }
             }
-        return list
     }
 
     fun updateUserOfficeHoursList(email: String, code: String){
