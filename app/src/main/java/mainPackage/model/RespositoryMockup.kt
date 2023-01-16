@@ -262,7 +262,7 @@ class RepositoryMockup {
         return StudentsTimeInstance(title, time, message, status, officeHoursCode)
     }
 
-    fun writeStudentsTimeInstance(title: String, time: String, message: String, status: String, officeHoursCode: String) {
+    fun writeStudentsTimeInstance(title: String, time: String, message: String, officeHoursCode: String) {
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("Student_Request")
 
@@ -270,7 +270,7 @@ class RepositoryMockup {
             "Title" to title,
             "Time" to time,
             "Message" to message,
-            "Status" to status,
+            "Status" to "Pending",
             "office_hours_code" to officeHoursCode
         )
 
@@ -287,5 +287,29 @@ class RepositoryMockup {
         myRef.update("pass", password)
             .addOnSuccessListener { Log.d(TAG, "Password successfully updated") }
             .addOnFailureListener { e -> Log.w(TAG, "Error in updating a password", e) }
+    }
+
+    fun timeFromCode(code: String) : String {
+        val database = FirebaseFirestore.getInstance()
+        var timeFrom = ""
+        var timeTo = ""
+        var time = ""
+        val ref = database.collection("OfficeHoursInstance")
+            .whereEqualTo("id", code)
+        ref.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    timeFrom = document.get("time_from") as String
+                    timeTo = document.get("time_to") as String
+                    Log.d(TAG, " Time instance successfully read")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        time = timeFrom + "-" + timeTo
+        return time
     }
 }

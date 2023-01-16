@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.widget.ImageButton
 import com.example.officehoursreservationsystem.R
 
-class TeacherActivity : AppCompatActivity() {
+class RequestListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_teacher)
+        setContentView(R.layout.activity_request_list)
 
         val butAct = findViewById<ImageButton>(R.id.image_button_4)
         butAct.setOnClickListener {

@@ -19,8 +19,9 @@ class RequestCreationActivity(val code: String) : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_request_creation)
 
-        val currCode = intent.getStringExtra("ITEM_ID", -1)
+        val currCode = intent.getStringExtra("ITEM_ID")
         var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
+        viewModel.currOfficeHoursInstanceID = currCode!!
 
         val returnButton = findViewById<ImageButton>(R.id.image_button_3)
         returnButton.id = R.id.image_button_3
@@ -34,7 +35,7 @@ class RequestCreationActivity(val code: String) : AppCompatActivity() {
             val onClickListener = button.setOnClickListener {
                 when (it.id) {
                     R.id.apply_button -> {
-                        // code for apply_button
+                        onButtonClickApply(it)
                     }
                     R.id.cancel_button -> {
                         onButtonClickReturn(it)
@@ -46,25 +47,30 @@ class RequestCreationActivity(val code: String) : AppCompatActivity() {
             }
         }
 
-        fun onButtonClickApply(view: View){
-            val timeInput = findViewById<EditText>(R.id.time_input)
-            val titleInput = findViewById<EditText>(R.id.title_input)
-            val textInput = findViewById<EditText>(R.id.message_input)
-            val time = timeInput.text.toString().trim()
-            val title = titleInput.text.toString().trim()
-            val text = textInput.text.toString().trim()
-            if(time.isEmpty() || title.isEmpty() || text.isEmpty()){
-                showEmptyFieldsPopup(this)
-            }
-            else if (!timeFormCheck(time)){
-                showIncorrectTimePopup(this)
-            }
-            else if (viewModel.timeOutOfBoundsCheck(currCode!!, time)){
-                showTimeOutOfBoundsPopup(this)
-            }
-            else{
 
-            }
+    }
+
+    fun onButtonClickApply(view: View){
+        var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
+        val timeInput = findViewById<EditText>(R.id.time_input)
+        val titleInput = findViewById<EditText>(R.id.title_input)
+        val textInput = findViewById<EditText>(R.id.message_input)
+        val time = timeInput.text.toString().trim()
+        val title = titleInput.text.toString().trim()
+        val text = textInput.text.toString().trim()
+        if(time.isEmpty() || title.isEmpty() || text.isEmpty()){
+            showEmptyFieldsPopup(this)
+        }
+        else if (!timeFormCheck(time)){
+            showIncorrectTimePopup(this)
+        }
+        else if (viewModel.timeOutOfBoundsCheck(viewModel.currOfficeHoursInstanceID, time)){
+            showTimeOutOfBoundsPopup(this)
+        }
+        else{
+            viewModel.addNewRequest(title, time, text, viewModel.currOfficeHoursInstanceID)
+            val intent = Intent(this, OfficeHoursListActivity::class.java)
+            startActivity(intent)
         }
     }
 

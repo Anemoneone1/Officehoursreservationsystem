@@ -6,11 +6,12 @@ import mainPackage.model.User
 import mainPackage.utils.Checks
 import mainPackage.utils.utils1.passwordCheck
 import mainPackage.model.RepositoryMockup
+import mainPackage.model.StudentsTimeInstance
 
 class OHRViewModel (): ViewModel(){
 
     private var currentUser = User()
-    var currOfficeHoursInstanceID = null
+    var currOfficeHoursInstanceID = "null"
     val repo = RepositoryMockup()
 //    private val userList = repository.getUserList()
 
@@ -19,8 +20,7 @@ class OHRViewModel (): ViewModel(){
         if (currUser.setEmail(email)==Checks.INCORRECT_EMAIL_FORM) return Checks.INCORRECT_EMAIL_FORM
         else if (passwordCheck(password)==Checks.INCORRECT_PASSWORD_FORM) return  Checks.INCORRECT_PASSWORD_FORM
         currUser.password=password
-        currentUser=currUser
-        return repo.userLogin(currentUser)
+        return repo.userLogin(currUser)
     }
 
     fun getOfficeHoursList(): MutableList<OfficeHoursInstance>? {
@@ -38,6 +38,10 @@ class OHRViewModel (): ViewModel(){
         val endTime2 = endHour2.toInt() * 60 + endMinute2.toInt()
 
         return (startTime1 < startTime2 && endTime1 <= startTime2) || (startTime1 >= endTime2 && endTime1 > endTime2)
+    }
+
+    fun addNewRequest(title: String, time: String, message: String, officeHoursCode: String){
+        repo.writeStudentsTimeInstance(title, time, message, officeHoursCode)
     }
 
     }
