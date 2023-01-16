@@ -282,6 +282,7 @@ class RepositoryMockup {
 
     }
 
+
     fun updateUsersPassword(password: String, email: String){
         val database = FirebaseFirestore.getInstance()
         val myRef = database.collection("Users").document(email)
@@ -312,6 +313,56 @@ class RepositoryMockup {
             }
         time = timeFrom + "-" + timeTo
         return time
+    }
+
+    fun addOfficeHoursStud (studEmail: String?, tEmail: String) : Boolean{
+        val database = FirebaseFirestore.getInstance()
+        val tRef = database.collection("Users").document(tEmail)
+        val sRef = database.collection("Users").document(studEmail!!)
+        var teacherList = ""
+        var studList = ""
+        var bool = false
+        tRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    bool = true
+                    teacherList = document.get("office_hours_list") as String
+                    Log.d(TAG, "office_hours_list successfully read")
+                } else {
+                    Log.d(TAG, "Is empty")
+
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        sRef.get()
+            .addOnSuccessListener { doc ->
+                if (doc != null) {
+                    studList = doc.get("office_hours_list") as String
+                    if(!studList.contains(teacherList)){
+                        if (studList.isEmpty()){
+                            studList = teacherList
+                        }
+                        else{
+                            studList = "$studList, $teacherList"
+                        }
+                        sRef.update("office_hours_list", studList)
+                        Log.d(TAG, "office_hours_list successfully read")
+                    }
+                }
+                else {
+                    Log.d(TAG, "Is empty")
+                }
+            }
+            .addOnFailureListener { exception ->
+                if (exception is FirebaseFirestoreException) {
+                    Log.e(TAG, "Error getting document: ", exception)
+                }
+            }
+        return bool
     }
 
     //Функция которая меняет статус реквеста Pending...

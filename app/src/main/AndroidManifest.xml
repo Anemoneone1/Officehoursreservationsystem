@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.OfficeHoursReservationSystem"
+        android:theme="@style/Theme.AppCompat.DayNight"
         tools:targetApi="31">
         <activity
             android:name="mainPackage.view.RequestListActivity"
@@ -47,6 +47,28 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name="mainPackage.view.Main2Activity$LoginActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+    <activity
+        android:name="mainPackage.view.AddOfficeHoursActivity"
+        android:exported="false">
+        <meta-data
+            android:name="android.app.lib_name"
+            android:value="" />
+    </activity>
+    <activity
+        android:name="mainPackage.view.CreateOfficeHoursActivity"
+        android:exported="false">
+        <meta-data
+            android:name="android.app.lib_name"
+            android:value="" />
+    </activity>
+
     </application>
 
 </manifest>

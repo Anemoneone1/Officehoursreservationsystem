@@ -15,6 +15,7 @@ class OfficeHoursListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_office_hours_list)
+        var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
 
         val secondButAct = findViewById<ImageButton>(R.id.image_button_2)
         secondButAct.setOnClickListener{
@@ -28,8 +29,20 @@ class OfficeHoursListActivity : AppCompatActivity() {
             startActivity(Intent)
         }
 
+        val addOfficeHoursButton = findViewById<Button>(R.id.addOfficeHoursButton)
+        if (viewModel.currentUser.isATeacher == true){
+            addOfficeHoursButton.setOnClickListener{
+                val Intent = Intent(this, CreateOfficeHoursActivity::class.java)
+                startActivity(Intent)
+            }
+        }
+        else{
+            addOfficeHoursButton.setOnClickListener{
+                val Intent = Intent(this, AddOfficeHoursActivity::class.java)
+                startActivity(Intent)
+            }
+        }
 
-        var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
         val myLinearLayout = findViewById<LinearLayout>(R.id.my_linear_layout)
         val myScrollView = findViewById<ScrollView>(R.id.scrollView3)
 //        val myList = listOf(OfficeHoursInstance("maksym@gmail.com", "10:00", "11:00", "1231"), OfficeHoursInstance("jane@gmail.com", "11:00", "12:00", "1231"))

@@ -8,69 +8,56 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.example.officehoursreservationsystem.R
-import mainPackage.utils.utils1.timeFormCheck
+import mainPackage.utils.Checks
+import mainPackage.utils.utils1
 import mainPackage.viewModel.OHRViewModel
 
-class RequestCreationActivity() : AppCompatActivity() {
+class CreateOfficeHoursActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_request_creation)
-
-        val currCode = intent.getStringExtra("ITEM_ID")
-        var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
-        viewModel.currOfficeHoursInstanceID = currCode!!
-
-        val returnButton = findViewById<ImageButton>(R.id.image_button_3)
-        returnButton.id = R.id.image_button_3
-        val applyButton = findViewById<Button>(R.id.apply_button)
-        applyButton.id = R.id.apply_button
+        setContentView(R.layout.activity_create_office_hours)
+        val returnButton = findViewById<ImageButton>(R.id.image_button_teacher_creation)
+        returnButton.id = R.id.image_button_add_office_hours
+        val createButton = findViewById<Button>(R.id.apply_button)
+        createButton.id = R.id.apply_button
         val cancelButton = findViewById<Button>(R.id.cancel_button)
         cancelButton.id = R.id.cancel_button
-        val buttonList = arrayListOf(applyButton, cancelButton, returnButton)
+        val buttonList = arrayListOf(createButton, cancelButton, returnButton)
 
         for (button in buttonList) {
             val onClickListener = button.setOnClickListener {
                 when (it.id) {
                     R.id.apply_button -> {
-                        onButtonClickApply(it)
+                        onButtonClickAdd(it)
                     }
                     R.id.cancel_button -> {
                         onButtonClickReturn(it)
                     }
-                    R.id.image_button_3 ->{
+                    R.id.image_button_teacher_creation ->{
                         onButtonClickReturn(it)
                     }
                 }
             }
         }
-
-
     }
 
-    fun onButtonClickApply(view: View){
+    fun onButtonClickAdd(view: View){
         var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
-        val timeInput = findViewById<EditText>(R.id.time_input)
-        val titleInput = findViewById<EditText>(R.id.title_input)
-        val textInput = findViewById<EditText>(R.id.message_input)
+        val timeInput = findViewById<EditText>(R.id.title_input)
         val time = timeInput.text.toString().trim()
-        val title = titleInput.text.toString().trim()
-        val text = textInput.text.toString().trim()
-        if(time.isEmpty() || title.isEmpty() || text.isEmpty()){
+        if(time.isEmpty()){
             showEmptyFieldsPopup(this)
         }
-        else if (!timeFormCheck(time)){
+        else if (!utils1.timeFormCheck(time)){
             showIncorrectTimePopup(this)
         }
-        else if (viewModel.timeOutOfBoundsCheck(viewModel.currOfficeHoursInstanceID, time)){
-            showTimeOutOfBoundsPopup(this)
-        }
         else{
-            viewModel.addNewRequest(title, time, text, viewModel.currOfficeHoursInstanceID)
-            val intent = Intent(this, OfficeHoursListActivity::class.java)
-            startActivity(intent)
+            viewModel.createOfficeHours(time)
+            showOHAddedPopup(this)
         }
     }
 
@@ -83,10 +70,10 @@ class RequestCreationActivity() : AppCompatActivity() {
         alertDialog.show()
     }
 
-    fun showTimeOutOfBoundsPopup(context: Context) {
+    fun showOHAddedPopup(context: Context) {
         val builder = AlertDialog.Builder(context)
-        builder.setTitle("Error")
-        builder.setMessage("You cannot set the time outside of office hours")
+        builder.setTitle("Office hours created")
+        builder.setMessage("Your office hours have been added to your list!")
         builder.setPositiveButton("OK") { _, _ -> }
         val alertDialog = builder.create()
         alertDialog.show()

@@ -6,25 +6,49 @@ import mainPackage.model.User
 import mainPackage.utils.Checks
 import mainPackage.utils.utils1.passwordCheck
 import mainPackage.model.RepositoryMockup
-import mainPackage.model.StudentsTimeInstance
 
 class OHRViewModel (): ViewModel(){
 
-    private var currentUser = User()
+    var currentUser = User()
     var currOfficeHoursInstanceID = "null"
     val repo = RepositoryMockup()
 //    private val userList = repository.getUserList()
 
-    fun login(email: String, password: String): Checks{
+    fun login(email: String, password: String): Checks {
         var currUser = User()
-        if (currUser.setEmail(email)==Checks.INCORRECT_EMAIL_FORM) return Checks.INCORRECT_EMAIL_FORM
-        else if (passwordCheck(password)==Checks.INCORRECT_PASSWORD_FORM) return  Checks.INCORRECT_PASSWORD_FORM
-        currUser.password=password
-        return repo.userLogin(currUser)
+        if (currUser.setEmail(email) == Checks.INCORRECT_EMAIL_FORM) return Checks.INCORRECT_EMAIL_FORM
+        else if (passwordCheck(password) == Checks.INCORRECT_PASSWORD_FORM) return Checks.INCORRECT_PASSWORD_FORM
+        currUser.password = password
+        var final: Checks= Checks.FAILED_CHECK
+        repo.userLogin(currUser) { check ->
+            when (check) {
+                Checks.PASSED -> {
+                    final = Checks.PASSED
+                }
+                Checks.FAILED_CHECK -> {
+                    final = Checks.FAILED_CHECK
+                }
+                Checks.NEW_USER_CREATED -> {
+                    final = Checks.NEW_USER_CREATED
+                }
+                else -> {}
+            }
+        }
+        return final
+    }
+
+    fun addOfficeHours(teachersEmail: String): Boolean{
+        return repo.addOfficeHoursStud(currentUser.email, teachersEmail)
     }
 
     fun getOfficeHoursList(): MutableList<OfficeHoursInstance>? {
         return currentUser.email?.let { repo.showOfficeHoursList(it) }
+    }
+
+    fun createOfficeHours(time: String){
+        val pattern = "^(\\d{5})-(\\d{5})\$".toRegex()
+        val (startTime, endTime) = pattern.find(time)!!.destructured
+        currentUser.email?.let { repo.writeOfficeHoursInstance(it, startTime, endTime) }
     }
 
     fun timeOutOfBoundsCheck(code: String, time: String): Boolean{
