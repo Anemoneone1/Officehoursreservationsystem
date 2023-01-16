@@ -22,6 +22,13 @@ class OfficeHoursListActivity : AppCompatActivity() {
             startActivity(Intent)
         }
 
+        val requestListButton = findViewById<ImageButton>(R.id.img_button_forward)
+        requestListButton.setOnClickListener{
+            val Intent = Intent(this, RequestListActivity::class.java)
+            startActivity(Intent)
+        }
+
+
         var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
         val myLinearLayout = findViewById<LinearLayout>(R.id.my_linear_layout)
         val myScrollView = findViewById<ScrollView>(R.id.scrollView3)
