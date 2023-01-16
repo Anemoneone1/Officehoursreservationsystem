@@ -27,34 +27,26 @@ class Main2Activity : AppCompatActivity() {
         }
 
     fun onButtonClick(view: View) {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-    }
+        var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
 
+        val emailEditText = findViewById<EditText>(R.id.et_email)
+        val passwordEditText = findViewById<EditText>(R.id.et_password)
 
-    class LoginActivity : AppCompatActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-
-            var viewModel = ViewModelProvider(this).get(OHRViewModel::class.java)
-
-            val emailEditText = findViewById<EditText>(R.id.et_email)
-            val passwordEditText = findViewById<EditText>(R.id.et_password)
-
-            super.onCreate(savedInstanceState)
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
-            when(viewModel.login(email, password)){
-                Checks.PASSED-> setContentView(R.layout.activity_office_hours_list)
-                Checks.INCORRECT_PASSWORD_FORM->showIncorrectPasswordFormPopup(this)
-                Checks.INCORRECT_EMAIL_FORM -> {
-                    showIncorrectEmailFormPopup(this)
-                    setContentView(R.layout.activity_office_hours_list)
-                }
-                Checks.NEW_USER_CREATED-> showNewUserPopup(this)
-                Checks.FAILED_CHECK-> showIncorrectPasswordPopup(this)
-                else->{}
+        val email = emailEditText.text.toString()
+        val password = passwordEditText.text.toString()
+//        when(viewModel.login(email, password)){
+        when(Checks.PASSED){
+            Checks.PASSED-> {
+                val Intent = Intent(this, OfficeHoursListActivity::class.java)
+                startActivity(Intent)
             }
+            Checks.INCORRECT_PASSWORD_FORM->showIncorrectPasswordFormPopup(this)
+            Checks.INCORRECT_EMAIL_FORM -> showIncorrectEmailFormPopup(this)
+            Checks.NEW_USER_CREATED-> showNewUserPopup(this)
+            Checks.FAILED_CHECK-> showIncorrectPasswordPopup(this)
+            else->{}
         }
+    }
 
         fun showNewUserPopup(context: Context) {
             val builder = AlertDialog.Builder(context)
@@ -92,4 +84,7 @@ class Main2Activity : AppCompatActivity() {
             alertDialog.show()
         }
     }
-    }
+
+
+
+

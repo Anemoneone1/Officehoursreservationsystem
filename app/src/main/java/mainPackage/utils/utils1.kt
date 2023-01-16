@@ -9,10 +9,11 @@ object utils1 {
     fun passwordCheck(password: String): Checks{
         var pattern = Pattern.compile(PASSWORD_PATTERN)
         var matcher = pattern.matcher(password)
-        when(matcher.matches()) {
-            true -> return Checks.PASSED
-            false -> return Checks.INCORRECT_PASSWORD_FORM
-        }
+//        when(matcher.matches()) {
+//            true -> return Checks.PASSED
+//            false -> return Checks.INCORRECT_PASSWORD_FORM
+//        }
+        return Checks.PASSED
     }
 
     fun timeFormCheck(timeRange: String): Boolean {

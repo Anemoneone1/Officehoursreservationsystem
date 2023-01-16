@@ -47,13 +47,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name="mainPackage.view.Main2Activity$LoginActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
     <activity
         android:name="mainPackage.view.AddOfficeHoursActivity"
         android:exported="false">
